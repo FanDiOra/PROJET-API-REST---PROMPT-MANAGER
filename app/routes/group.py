@@ -4,6 +4,8 @@ from app.db import get_db_connection
 
 bp = Blueprint('group', __name__)
 
+# ----------------------------- Group Management -----------------------------------
+# Create
 @bp.route('/admin/group', methods=['POST'])
 @jwt_required()
 def create_group():
@@ -23,6 +25,7 @@ def create_group():
     conn.close()
     return jsonify({'message': 'Group created successfully', 'groupID': group_id}), 201
 
+# Update
 @bp.route('/admin/group/<int:group_id>', methods=['PUT'])
 @jwt_required()
 def update_group(group_id):
@@ -39,18 +42,7 @@ def update_group(group_id):
     conn.close()
     return jsonify({'message': 'Group updated successfully'})
 
-@bp.route('/admin/group/<int:group_id>', methods=['DELETE'])
-@jwt_required()
-def delete_group(group_id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("UPDATE \"user\" SET \"groupID\" = NULL WHERE \"groupID\" = %s", (group_id,))
-    cursor.execute("DELETE FROM \"group\" WHERE \"groupID\" = %s", (group_id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({'message': 'Group deleted successfully'})
-
+# List
 @bp.route('/admin/groups', methods=['GET'])
 @jwt_required()
 def list_groups():
@@ -69,6 +61,7 @@ def list_groups():
     ]
     return jsonify(groups_list)
 
+# List users by group
 @bp.route('/admin/group/<int:group_id>', methods=['GET'])
 @jwt_required()
 def get_group(group_id):
@@ -88,3 +81,16 @@ def get_group(group_id):
         'users': [{'userID': user[0], 'firstname': user[1], 'lastname': user[2]} for user in users]
     }
     return jsonify(group_info)
+
+# Delete
+@bp.route('/admin/group/<int:group_id>', methods=['DELETE'])
+@jwt_required()
+def delete_group(group_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE \"user\" SET \"groupID\" = NULL WHERE \"groupID\" = %s", (group_id,))
+    cursor.execute("DELETE FROM \"group\" WHERE \"groupID\" = %s", (group_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({'message': 'Group deleted successfully'})
