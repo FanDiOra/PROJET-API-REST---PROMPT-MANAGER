@@ -12,7 +12,10 @@ def create_prompt():
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO prompt (content, status, price, user_id) VALUES (%s, %s, %s, %s) RETURNING promptID",
+        """
+        INSERT INTO prompt (content, status, price, user_id)
+        VALUES (%s, %s, %s, %s) RETURNING promptID
+        """,
         (data['content'], 'en attente', data.get('price', 1000), current_user)
     )
     prompt_id = cursor.fetchone()[0]
@@ -28,7 +31,11 @@ def update_prompt(prompt_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE prompt SET content = %s, status = %s, price = %s WHERE promptID = %s",
+        """
+        UPDATE prompt
+        SET content = %s, status = %s, price = %s
+        WHERE promptID = %s
+        """,
         (data['content'], data['status'], data['price'], prompt_id)
     )
     conn.commit()
@@ -75,7 +82,11 @@ def list_prompts():
 def list_prompts_by_user(user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT promptID, content, status, price, creation_date, edit_date, user_id FROM prompt WHERE user_id = %s", (user_id,))
+    cursor.execute(
+        """
+        SELECT promptID, content, status, price, creation_date, edit_date, user_id
+        FROM prompt WHERE user_id = %s
+        """, (user_id,))
     prompts = cursor.fetchall()
     cursor.close()
     conn.close()
