@@ -4,6 +4,8 @@ from app.db import get_db_connection
 
 bp = Blueprint('prompt', __name__)
 
+# ----------------------------- Prompt Management -----------------------------------
+# Create
 @bp.route('/prompt', methods=['POST'])
 @jwt_required()
 def create_prompt():
