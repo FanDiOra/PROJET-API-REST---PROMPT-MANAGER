@@ -4,6 +4,9 @@
 -- Création du type ENUM pour le rôle
 CREATE TYPE user_role AS ENUM ('admin', 'user');
 
+-- Création du type ENUM pour le statut des prompts
+CREATE TYPE prompt_status AS ENUM ('on hold', 'activated', 'to review', 'reminder', 'to delete');
+
 -- Création des tables
 CREATE TABLE "group" (
     groupID INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -24,7 +27,7 @@ CREATE TABLE "user" (
 CREATE TABLE "prompt" (
     promptID INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     content TEXT NOT NULL,
-    status VARCHAR(64) NOT NULL,
+    status prompt_status DEFAULT 'on hold',
     price FLOAT DEFAULT 1000,
     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     edit_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
